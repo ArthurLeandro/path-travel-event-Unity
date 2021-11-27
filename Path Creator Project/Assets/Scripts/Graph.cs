@@ -15,57 +15,49 @@ namespace Travel
 
 		public List<Vertex> Search(Vertex p_origin, Vertex p_destination)
 		{
-			List<List<Vertex>> path = new List<List<Vertex>>();
-			foreach (Vertex n in p_origin.Vertices)
+			List<List<Vertex>> paths = new List<List<Vertex>>();
+			foreach (Vertex v in p_origin.Vertices)
 			{
-				List<Vertex> list = Search(n, p_destination, new List<Vertex>(), new List<Vertex>());
-				if (list != null)
-					path.Add(list);
+				List<Vertex> path = new List<Vertex>();
+				path.Add(p_origin);
+				DFS(v, p_destination, new List<Vertex>(), path, paths);
 			}
-#if UNITY_EDITOR
-			// foreach (var p in path)
-			// {
-			// 	foreach (var n in p)
-			// 	{
-			// 		Debug.Log($"Node: {n.Name}");
-			// 	}
-			// 	Debug.Log($"Tamanho {p.Count}");
-			// }
-#endif
-			Debug.Log($"ORIGIN: {p_origin.Name}");
-			Debug.Log($"DESTINY: {p_destination.Name}");
-			return path.Last();
-			// return path.Where(p => p.Count > 0).OrderBy(p => p.Count).First();
+			// foreach (List<Vertex> path in paths)
+			// 	PrintListOfPaths(path, p_origin, p_destination);
+			return paths.Where(p => p.Count > 0).OrderByDescending(p => p.Count).First();
 		}
 
-		public List<Vertex> Search(Vertex p_origin, Vertex p_destination, List<Vertex> p_visited, List<Vertex> p_path)
+		public void DFS(Vertex p_origin, Vertex p_destination, List<Vertex> p_visited, List<Vertex> p_path, List<List<Vertex>> p_paths)
 		{
-			if (p_origin != null)
+			if (p_origin.Name.Equals(p_destination.Name))
 			{
-				if (!p_visited.Contains(p_origin))
+				p_path.Add(p_destination);
+				p_paths.Add(p_path);
+			}
+			else
+			{
+				foreach (Vertex v in p_origin.Vertices)
 				{
-					p_visited.Add(p_origin);
-					p_path.Add(p_origin);
-					if (p_origin == p_destination)
+					if (!p_visited.Contains(p_origin))
 					{
-						return p_path;
+						p_path.Add(v);
+						p_visited.Add(p_origin);
+						DFS(v, p_destination, p_visited, p_path, p_paths);
 					}
-					else
-					{
-						foreach (Vertex v in p_origin.Vertices)
-						{
-							Search(v, p_destination, p_visited, p_path);
-						}
-					}
-				}
-				else
-				{
-					return null;
 				}
 			}
-			return null;
 		}
 
+		private void PrintListOfPaths(List<Vertex> p_path, Vertex p_origin, Vertex p_destination)
+		{
+#if UNITY_EDITOR
+			Debug.Log("---------- Path	found ---------- ");
+			Debug.Log($"Origin:{p_origin.Name}\nDestination:{p_destination.Name}");
+			foreach (Vertex v in p_path)
+				Debug.Log($"{v.Name}");
+			Debug.Log("\n\n\n");
+#endif
+		}
 
 		private int NumberCalculated() => UnityEngine.Random.Range(0, 101);
 
