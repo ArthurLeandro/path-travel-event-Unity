@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/PathCreator/Examples/Scenes/Tarium Map.unity
+    guid: 788ef044742ec8f819e2dd116c2e1cb1
   m_configObjects: {}
